@@ -1,37 +1,65 @@
-const registros = d3.select("#registros")
+const graf = d3.select("#graf")
+const colorSelect = d3.select("#colorSelect")
 
-const load = async () => {
-  const data = await d3.json('https://randomuser.me/api?results=10')
-  //console.log(data.results);
+const anchoTotal = +graf.style("width").slice(0,-2)
+const altoTotal = (anchoTotal * 9) / 16
 
-  //data.results.forEach((r) => {
-  //  console.log(r.name.title, r.name.first, r.name.last);
-  //})
+const svg = graf
+  .append("svg")
+  .attr("width", anchoTotal)
+  .attr("height", altoTotal)
+  .attr("class", "graf")
+
+let colores = [
+  { nombre: "Rojo", valor: "#f00" },
+  { nombre: "Verde", valor: "#0f0" },
+  { nombre: "Azul", valor: "#00f" },
+  { nombre: "Amarillo", valor: "#ff0" },
+]
+
+colorSelect
+  .selectAll("option")
+  .data(colores)
+  .enter()
+  .append("option")
+  .attr("value", (d) => d.valor)
+  .text((d) => d.nombre)
+
+let cx = anchoTotal / 2
+let cy = altoTotal / 2
+let r = 75
+let color = "#f00"
+
+const c = svg
+  .append("circle")
+  .attr("cx", cx)
+  .attr("cy", cy)
+  .attr("r", r)
+  .attr("fill", color)
+
+
+const modi = (delta) => {
+  // if (delta.x !== undefined) {
+  //   cx += delta.x
+  // }
   
-  const rows = registros.selectAll('tr').data(data.results)
-  rows.enter().append('tr').html(r => `<td>
-  <img src="${r.picture.medium}">
-</td>
-<td>
-  <h3>${r.name.title}. ${r.name.first} ${r.name.last}</h3>
-  <p>${r.location.street.number} ${r.location.street.name}, ${r.location.city}<br>${r.location.country}</p>
-</td>
-`)
+  // if (delta.y !== undefined) {
+  //   cy += delta.y
+  // }
+  
+  // Operador ternario
+  // cx += delta.x !== undefined ? delta.x : 0
+  // cy += delta.y !== undefined ? delta.y : 0
+  
+  // Operador de Coalescencia (Coalescence Operator)
+  cx += delta.x ?? 0
+  cy += delta.y ?? 0
+  
+  color = colorSelect.node().value
+  
+  c.transition()
+    .duration(1500)
+    .attr("cx", cx)
+    .attr("cy", cy)
+    .attr("fill", color)
 }
-
-load()
-
-{
-/*
-<tr>
-<td>
-    <img src="https://randomuser.me/api/portraits/med/men/54.jpg" class="rounded-circle">
-</td>
-<td>
-    <h3>Mr. Dorian Rey</h3>
-    <p>3993 Rue de L'Abbé-Groult, Toulouse<br>France</p>
-</td>
-</tr>
- */
-}
-
