@@ -6,7 +6,7 @@ const anchoTotal = +graf.style("width").slice(0,-2)
 const altoTotal = (anchoTotal * 9) / 16
 
 const margins = {
-  top: 20,
+  top: 60,
   right: 20,
   bottom: 75,
   left: 100
@@ -48,6 +48,8 @@ const load = async () => {
   const yAccessor = (d) => d.ganancia
   const xAccessor = (d) => d.tienda
   
+  data.sort((a, b) => yAccessor(b) - yAccessor(a))
+
   // Escaladores
   const y = d3
     .scaleLinear()
@@ -73,7 +75,26 @@ const load = async () => {
     .attr("height", (d) => alto - y(yAccessor(d)))
     .attr("fill", "#e9c46a")
   
-  // Ejes
+  // Títulos
+  g.append("text")
+    .attr("x", ancho / 2)
+    .attr("y", -15)
+    .classed("titulo", true)
+    .text("Ganancias de las tiendas")
+  
+  
+  const xAxis = d3.axisBottom(x)
+  const yAxis = d3.axisLeft(y).ticks(8)
+  
+  const xAxisGroup = g
+    .append("g")
+    .attr("transform", `translate(0, ${alto})`)
+    .classed("axis", true)
+    .call(xAxis)
+  const yAxisGroup = g
+    .append("g")
+    .classed("axis", true)
+    .call(yAxis)
 
 }
 
