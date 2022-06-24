@@ -1,5 +1,6 @@
 // Selecciones
 const graf = d3.select("#graf")
+const metrica = d3.select("#metrica")
 
 // Dimensiones
 const anchoTotal = +graf.style("width").slice(0,-2)
@@ -36,13 +37,21 @@ const g = svg
   .append("g")
   .attr("transform", `translate(${margins.left}, ${margins.top})`)
 
-const load = async (variable = "clientes") => {
+const draw = async (variable = "clientes") => {
   // Carga de datos
   data = await d3.csv("barras.csv", d3.autoType)
   //data.forEach((d) => {
   //  d.facturacion = +d.facturacion
   //  d.clientes = +d.clientes
   //})
+  
+  metrica
+    .selectAll("option")
+    .data(Object.keys(data[0]).slice(1))
+    .enter()
+    .append("option")
+    .attr("value", (d) => d)
+    .text((d) => d)
   
   // Accessor
   const yAccessor = (d) => d[variable]
@@ -104,7 +113,13 @@ const load = async (variable = "clientes") => {
     .append("g")
     .classed("axis", true)
     .call(yAxis)
+  
+  // Eventos
+  metrica.on("change", (e) => {
+    e.preventDefault()
+    
+  })
 
 }
 
-load("margen")
+draw("margen")
