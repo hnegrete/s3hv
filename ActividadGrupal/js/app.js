@@ -108,8 +108,6 @@ const drawHorizontal = async (el, filtro, titGraf, variable1 = "2015", variable2
   
   // Filtro
   let variable = filtro == 1 ? variable1 : catEntidades[variable2]
-  console.log("-----------------Horizontal-----------------")
-  console.log(el,filtro,variable,variable1,variable2)
   
   // Accesores
   const xAccessor = (d) => d[variable]
@@ -140,6 +138,9 @@ const drawHorizontal = async (el, filtro, titGraf, variable1 = "2015", variable2
     .attr("width", (d) => x(xAccessor(d)))
     .attr("height", y.bandwidth())
     .attr("fill", color(variable))
+    .attr("fill-opacity", "0.8")
+  
+  d3.selectAll("rect").on("mouseover", mouseover).on("mouseout", mouseout);
   
   const et = etiquetas
     .selectAll("text")
@@ -169,12 +170,12 @@ const drawHorizontal = async (el, filtro, titGraf, variable1 = "2015", variable2
   metrica1.on("change", (e) => {
     e.preventDefault()
     drawVertical(el = "#graf1", filtro = 1, titGraf = "Mes de más robo, ", variable1 = e.target.value, variable2 = metrica2.property("value"))
-    drawHorizontal(el = "#graf3", filtro = 1, titGraf = "Los 8 delitos de mayor violencia, ", variable1 = e.target.value, variable2 = metrica2.property("value"))
+    drawHorizontal(el = "#graf3", filtro = 1, titGraf = "Entidad más violenta, ", variable1 = e.target.value, variable2 = metrica2.property("value"))
   })
   metrica2.on("change", (e) => {
     e.preventDefault()
     drawVertical(el = "#graf2", filtro = 2, titGraf = "Año más violento, ", variable1 = metrica1.property("value"), variable2 = e.target.value)
-    drawVertical(el = "#graf4", filtro = 2, titGraf = "Entidad más violenta, ", variable1 = metrica1.property("value"), variable2 = e.target.value)
+    drawVertical(el = "#graf4", filtro = 2, titGraf = "Los 8 delitos de mayor violencia, ", variable1 = metrica1.property("value"), variable2 = e.target.value)
   })
 
 }
@@ -252,8 +253,7 @@ const drawVertical = async (el, filtro, titGraf, variable1 = "2015", variable2 =
   
   // Filtro
   let variable = filtro == 1 ? variable1 : catEntidades[variable2]
-  console.log("-----------------Vertical-----------------")
-  console.log(el,filtro,variable,variable1,variable2)
+
   // Accesores
   const yAccessor = (d) => d[variable]
   data.sort((a, b) => yAccessor(b) - yAccessor(a))
@@ -283,6 +283,9 @@ const drawVertical = async (el, filtro, titGraf, variable1 = "2015", variable2 =
     .attr("width", x.bandwidth())
     .attr("height", (d) => alto - y(yAccessor(d)))
     .attr("fill", color(variable))
+    .attr("fill-opacity", "0.8")
+  
+  d3.selectAll("rect").on("mouseover", mouseover).on("mouseout", mouseout);
   
   const et = etiquetas
     .selectAll("text")
@@ -313,17 +316,27 @@ const drawVertical = async (el, filtro, titGraf, variable1 = "2015", variable2 =
   metrica1.on("change", (e) => {
     e.preventDefault()
     drawVertical(el = "#graf1", filtro = 1, titGraf = "Mes de más robo, ", variable1 = e.target.value, variable2 = metrica2.property("value"))
-    drawHorizontal(el = "#graf3", filtro = 1, titGraf = "Los 8 delitos de mayor violencia, ", variable1 = e.target.value, variable2 = metrica2.property("value"))
+    drawHorizontal(el = "#graf3", filtro = 1, titGraf = "Entidad más violenta, ", variable1 = e.target.value, variable2 = metrica2.property("value"))
   })
   metrica2.on("change", (e) => {
     e.preventDefault()
     drawVertical(el = "#graf2", filtro = 2, titGraf = "Año más violento, ", variable1 = metrica1.property("value"), variable2 = e.target.value)
-    drawVertical(el = "#graf4", filtro = 2, titGraf = "Entidad más violenta, ", variable1 = metrica1.property("value"), variable2 = e.target.value)
+    drawVertical(el = "#graf4", filtro = 2, titGraf = "Los 8 delitos de mayor violencia, ", variable1 = metrica1.property("value"), variable2 = e.target.value)
   })
   
 }
 
 drawVertical(el = "#graf1", filtro = 1, titGraf = "Mes de más robo, ")
 drawVertical(el = "#graf2", filtro = 2, titGraf = "Año más violento, ")
-drawVertical(el = "#graf4", filtro = 2, titGraf = "Entidad más violenta, ")
-drawHorizontal(el = "#graf3", filtro = 1, titGraf = "Los 8 delitos de mayor violencia, ")
+drawVertical(el = "#graf4", filtro = 2, titGraf = "Los 8 delitos de mayor violencia, ")
+drawHorizontal(el = "#graf3", filtro = 1, titGraf = "Entidad más violenta, ")
+
+d3.selectAll("rect").on("mouseover", mouseover).on("mouseout", mouseout);
+
+function mouseover(){
+  d3.select(this).attr("fill-opacity", 1);
+}
+
+function mouseout(){
+  d3.select(this).attr("fill-opacity", 0.8);
+}
