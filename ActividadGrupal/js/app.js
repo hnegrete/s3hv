@@ -67,6 +67,16 @@ const drawHorizontal = async (el, filtro, titGraf, variable1 = "2015", variable2
     .append("g")
     .attr("transform", `translate(${margins.left}, ${margins.top})`)
 
+  // Grupo con la fuente de la gráfica
+  const fuente = svg
+  .append("g")
+  .attr("transform", `translate(${margins.left/2}, ${altoTotal - 10})`)
+  .append("text")
+  .attr("x", 0)
+  .attr("y", 0)
+  .classed("fuente", true)
+  .text("Fuente: SESNSP. Incidencia delictiva, 2015-2022.")
+  
   // Carga de datos
   data = await d3.csv("data/datasetGrafica" + el.slice(-1) + ".csv", d3.autoType)
   
@@ -213,6 +223,16 @@ const drawVertical = async (el, filtro, titGraf, variable1 = "2015", variable2 =
     .append("g")
     .attr("transform", `translate(${margins.left}, ${margins.top})`)
 
+  // Grupo con la fuente de la gráfica
+  const fuente = svg
+  .append("g")
+  .attr("transform", `translate(${margins.left/2}, ${altoTotal - 10})`)
+  .append("text")
+  .attr("x", 0)
+  .attr("y", 0)
+  .classed("fuente", true)
+  .text("Fuente: SESNSP. Incidencia delictiva, 2015-2022.")
+  
   // Carga de datos
   data = await d3.csv("data/datasetGrafica" + el.slice(-1) + ".csv", d3.autoType)
   
@@ -314,7 +334,7 @@ const drawVertical = async (el, filtro, titGraf, variable1 = "2015", variable2 =
   const yAxis = d3.axisLeft(y).ticks(8)
   yAxisGroup.transition().duration(2500).call(yAxis)
   if (el == "#graf4") {
-    xAxisGroup.transition().duration(2500).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform","rotate(-20)")
+    xAxisGroup.transition().duration(2500).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform","rotate(-15)")
   } else{
     xAxisGroup.transition().duration(2500).call(xAxis)
   }
@@ -338,11 +358,10 @@ const drawVertical = async (el, filtro, titGraf, variable1 = "2015", variable2 =
 const drawMapa = async (anio = "2015") => {
   // Lectura de datos
   const catEntidades = await d3.json("data/entidades.json")
-  const data = await d3.csv("data/datasetMapa.csv", d3.autoType)
 
   // Dimensiones
   const anchoTotal = +figura.style("width").slice(0,-2)
-  const altoTotal = anchoTotal
+  const altoTotal = anchoTotal * 0.8
 
   const ancho = anchoTotal
   const alto = altoTotal
@@ -364,6 +383,16 @@ const drawMapa = async (anio = "2015") => {
   const g = svg
     .append("g")
     .attr("transform", `translate(0, 100)`)
+  
+  // Grupo con la fuente de la gráfica
+  const fuente = svg
+  .append("g")
+  .attr("transform", `translate(${margins.left/2}, ${altoTotal - 10})`)
+  .append("text")
+  .attr("x", 0)
+  .attr("y", 0)
+  .classed("fuente", true)
+  .text("Fuente: SESNSP. Incidencia delictiva, 2015-2022.")
   
   // Título
   const titulo = g
@@ -387,13 +416,13 @@ const drawMapa = async (anio = "2015") => {
     .attr("fill", (d) => color(d[anio][0]))//"#581845")
     .attr("fill-opacity", "0.8")
     .on("mouseover", function(d) {
-      d3.select(this).attr("fill-opacity", "1")//.transition().duration(2500).attr("transform", "rotate(5)")
+      d3.select(this).attr("fill-opacity", "1").attr("stroke", "black").attr("stroke-width", "1")//.transition().duration(2500).attr("transform", "rotate(5)")
     })
     .on("mouseout", function(d) {
-      d3.select(this).attr("fill-opacity", "0.8")
+      d3.select(this).attr("fill-opacity", "0.8").attr("stroke-width", "0")
     })
     .on("click", function(d) {
-      console.log(d3.select(this).attr("id"))
+      metrica2.property("value", d3.select(this).attr("entidad"))
       drawVertical(el = "#graf2", filtro = 2, titGraf = "Año más violento, ", variable1=metrica1.property("value"), variable2=d3.select(this).attr("entidad"))
       drawVertical(el = "#graf4", filtro = 2, titGraf = "Los 8 delitos de mayor violencia, ", variable1=metrica1.property("value"), variable2=d3.select(this).attr("entidad"))
     })
